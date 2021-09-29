@@ -24,7 +24,7 @@
               }
             },
             "indexTransform": "./index-html.transform.js",
-            "outputPath": "dist/full-cycle-app",
+            "outputPath": "dist/full-cycle-app/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -142,6 +142,69 @@
               "devServerTarget": "full-cycle-app:serve:itwcw"
             }
           }
+        },
+        "server": {
+          "builder": "@angular-builders/custom-webpack:server",
+          "options": {
+            "outputPath": "dist/full-cycle-app/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json",
+            "customWebpackConfig": {
+              "path": "./extra-webpack.config.ts",
+              "mergeRules": {
+                "plugins": "prepend"
+              }
+            }
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true
+            },
+            "itwcw": {}
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "full-cycle-app:build:development",
+              "serverTarget": "full-cycle-app:server:development"
+            },
+            "production": {
+              "browserTarget": "full-cycle-app:build:production",
+              "serverTarget": "full-cycle-app:server:production"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "full-cycle-app:build:production",
+              "serverTarget": "full-cycle-app:server:production"
+            },
+            "development": {
+              "browserTarget": "full-cycle-app:build:development",
+              "serverTarget": "full-cycle-app:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }},
